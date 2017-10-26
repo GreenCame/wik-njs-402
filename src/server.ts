@@ -65,7 +65,7 @@ export class Server {
 
     this.useControllersRouting()
     
-    this.app.use(this.notFoundMiddleware)
+    this.useFallbackMiddlewares()
   }
 
   /**
@@ -88,6 +88,16 @@ export class Server {
     this.app.use(cookieParser('ajksdhfdsk fasdklaf kjhf jkasdf'))
 
     this.app.use(methodOverride())
+  }
+
+  /**
+   * Add some fallback middlewares to the response
+   * 
+   * @memberof Server
+   */
+  public useFallbackMiddlewares () {
+    this.app.use(this.notFoundMiddleware)
+    this.app.use(this.errorMiddleware)
   }
 
   /**
@@ -136,5 +146,27 @@ export class Server {
   ) {
     res.statusCode = 404
     res.end('Not found!!')
+  }
+
+  /**
+   * Un middleware qui sera utiliser en dernier recours, si jamais aucun middleware auparavant
+   * n'a géré la requête
+   * 
+   * @private
+   * @param {express.Request} req 
+   * @param {express.Response} res 
+   * @param {express.NextFunction} next 
+   * @memberof Server
+   */
+  private errorMiddleware(
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(err.status || 500)
+    res.json({ error: {
+      message: err.message || 'Unknown error',
+    }})
   }
 }

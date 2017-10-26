@@ -8,9 +8,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
+    "rootDirs": ["src", "."],
     "paths": {
       "*": [
+        "./*",
+        "./src/*",
         "node_modules/*"
       ]
     }

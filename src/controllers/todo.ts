@@ -1,4 +1,5 @@
 import { BaseController, Route, NextFunction } from './'
+import { Todo } from '../models'
 
 export class TodoController extends BaseController {
 
@@ -27,7 +28,12 @@ export class TodoController extends BaseController {
    * @memberof TodoController
    */
   public index(next: NextFunction) {
-    this.res.end('Voila')
+    // Ici on doit spécifier à findAll le type de valeur en sortie pour que TypeScript le connaisse
+    Todo.findAll<Todo>().then((todos) => {
+      console.log('Les todos: ', todos)
+
+      this.res.json(todos)
+    }).catch(next) // On oublie pas le catch !!!!!
   }
 
   /**
@@ -38,6 +44,10 @@ export class TodoController extends BaseController {
    */
   public create(next: NextFunction) {
     console.log(this.req.body)
-    this.res.end('Voila')
+    const todo = new Todo(this.req.body)
+
+    todo.save().then(() => {
+      this.res.json(todo)
+    }).catch(next) // On oublie pas le catch !!!!!
   }
 }
